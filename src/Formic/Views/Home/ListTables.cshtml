@@ -1,0 +1,14 @@
+﻿@model IList<string>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<table>
+@foreach(var table in Model)
+{
+    <tr>
+        <td><a href="/@table">@table</a></td>
+    </tr>
+}
+</table>

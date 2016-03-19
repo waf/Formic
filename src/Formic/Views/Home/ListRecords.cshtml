@@ -1,0 +1,35 @@
+﻿@model RecordSet
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<table>
+    <thead>
+        <tr>
+            @foreach(var property in Model.Properties)
+            {
+                <th>@property.Name</th>
+            }
+            @foreach(var property in Model.NavigationProperties)
+            {
+                <th>@property.Name</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var record in Model.Data)
+        {
+            <tr>
+            @foreach(var property in Model.Properties)
+            {
+                <td>@Html.DisplayProperty(record, property)</td>
+            }
+            @foreach(var property in Model.NavigationProperties)
+            {
+                <td>@Html.DisplayProperty(record, property)</td>
+            }
+            </tr>
+        }
+    </tbody>
+</table>

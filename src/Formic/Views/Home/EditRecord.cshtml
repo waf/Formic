@@ -1,0 +1,26 @@
+﻿@model RecordSet
+
+@{
+    ViewData["Title"] = "Home Page";
+    var entity = Model.Data.Single();
+}
+
+@using (Html.BeginForm())
+{
+    <table>
+    @foreach (var prop in Model.Properties)
+    {
+        <tr>
+            <th>@prop.Name:</th>
+            <td>@Html.EditorProperty(entity, prop)</td>
+        </tr>
+    }
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Save" />
+            </td>
+        </tr>
+    </table>
+
+}
+
