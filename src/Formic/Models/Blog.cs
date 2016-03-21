@@ -11,7 +11,7 @@ namespace Formic
             Post = new HashSet<Post>();
         }
 
-		[UIHint("ID")]
+        [UIHint("ID")]
         public int PK { get; set; }
         public string Name { get; set; }
 

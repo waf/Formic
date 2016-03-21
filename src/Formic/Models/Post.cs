@@ -14,6 +14,6 @@ namespace Formic
 
         public Guid AuthorFK { get; set; }
         public virtual Author Author { get; set; }
-		public virtual List<PostTag> PostTags { get; set; }
+        public virtual List<PostTag> PostTags { get; set; }
     }
 }

@@ -35,17 +35,17 @@ namespace Formic
 
                 entity.HasOne(d => d.Blog).WithMany(p => p.Post).HasForeignKey(d => d.BlogPK).OnDelete(DeleteBehavior.Restrict);
 
-				entity.HasOne(p => p.Author).WithMany(p => p.Posts).HasForeignKey(p => p.AuthorFK);
+                entity.HasOne(p => p.Author).WithMany(p => p.Posts).HasForeignKey(p => p.AuthorFK);
             });
 
-			modelBuilder.Entity<Author>(entity =>
-			{
-				entity.HasKey(a => a.Id);
-				entity.Property(a => a.Name)
-					.IsRequired()
-					.HasColumnType("varchar")
-					.HasMaxLength(100);
-			});
+            modelBuilder.Entity<Author>(entity =>
+            {
+                entity.HasKey(a => a.Id);
+                entity.Property(a => a.Name)
+                    .IsRequired()
+                    .HasColumnType("varchar")
+                    .HasMaxLength(100);
+            });
 
             modelBuilder.Entity<Tag>(entity =>
             {
@@ -57,18 +57,18 @@ namespace Formic
                     .HasColumnType("varchar");
             });
 
-			modelBuilder.Entity<PostTag>(entity =>
-			{
-				entity.HasKey(t => new { t.PostId, t.TagId });
+            modelBuilder.Entity<PostTag>(entity =>
+            {
+                entity.HasKey(t => new { t.PostId, t.TagId });
 
-				entity.HasOne(pt => pt.Post)
-					.WithMany(p => p.PostTags)
-					.HasForeignKey(pt => pt.PostId);
+                entity.HasOne(pt => pt.Post)
+                    .WithMany(p => p.PostTags)
+                    .HasForeignKey(pt => pt.PostId);
 
-				entity.HasOne(pt => pt.Tag)
-					.WithMany(t => t.PostTags)
-					.HasForeignKey(pt => pt.TagId);
-			});
+                entity.HasOne(pt => pt.Tag)
+                    .WithMany(t => t.PostTags)
+                    .HasForeignKey(pt => pt.TagId);
+            });
 
         }
 

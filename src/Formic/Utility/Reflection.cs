@@ -10,18 +10,18 @@ namespace Formic.Utility
 {
     public class Reflection
     {
-		public static PropertyInfo GetClrPropertyForEntity(IEntityType entity, string property)
-		{
-			return entity.ClrType.GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-		}
+        public static PropertyInfo GetClrPropertyForEntity(IEntityType entity, string property)
+        {
+            return entity.ClrType.GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        }
 
 
-		public static IQueryable<object> GetDbSetForType(DbContext db, IEntityType entity)
-		{
-			return (IQueryable<object>)db.GetType()
-				.GetMethod("Set")
-				.MakeGenericMethod(entity.ClrType)
-				.Invoke(db, null);
-		}
+        public static IQueryable<object> GetDbSetForType(DbContext db, IEntityType entity)
+        {
+            return (IQueryable<object>)db.GetType()
+                .GetMethod("Set")
+                .MakeGenericMethod(entity.ClrType)
+                .Invoke(db, null);
+        }
     }
 }
