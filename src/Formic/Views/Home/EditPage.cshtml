@@ -5,6 +5,11 @@
     var entity = Model.Data.Single();
 }
 
+@using (Html.BeginForm("DeleteRecord","Home"))
+{
+    <input type="submit" value="Delete" />
+}
+
 @using (Html.BeginForm())
 {
     <table>

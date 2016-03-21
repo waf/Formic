@@ -38,7 +38,7 @@ namespace Formic.Controllers
 
         [HttpGet]
         [Route("{table}/{id}/edit")]
-        public IActionResult EditRecord(string table, string id)
+        public IActionResult EditPage(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
             var record = GetByPrimaryKey(entity, id);
@@ -48,10 +48,9 @@ namespace Formic.Controllers
                 new HttpNotFoundResult() as IActionResult;
         }
 
-
         [HttpPost]
         [Route("{table}/{id}/edit")]
-        public IActionResult SaveRecord(string table, string id)
+        public IActionResult EditRecord(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
             var record = GetByPrimaryKey(entity, id);
@@ -69,6 +68,25 @@ namespace Formic.Controllers
 
             return RedirectToAction("ListRecords");
         }
+
+        [HttpPost]
+        [HttpDelete]
+        [Route("{table}/{id}/delete")]
+        public IActionResult DeleteRecord(string table, string id)
+        {
+            IEntityType entity = db.Model.FindEntityType(table);
+
+            var t = Activator.CreateInstance(entity.ClrType);
+            var pk = entity.FindPrimaryKey().Properties.First();
+            pk.GetSetter().SetClrValue(t, Convert(id, pk.ClrType));
+            db.Attach(t);
+            db.Remove(t);
+            db.SaveChanges();
+
+            return RedirectToAction("ListRecords");
+        }
+
+
 
         private object GetByPrimaryKey(IEntityType entity, string id)
         {
@@ -88,11 +106,11 @@ namespace Formic.Controllers
         }
 
         [HttpGet]
-        [Route("{table}")]
+        [Route("{table}/")]
         public IActionResult ListRecords(string table)
         {
             IEntityType entity = db.Model.FindEntityType(table);
-
+            //MetadataProvider.GetMetadataForProperties(entity.ClrType);
             // TODO: cache reflection
             IQueryable<object> results = Reflection.GetDbSetForType(db, entity);
 
