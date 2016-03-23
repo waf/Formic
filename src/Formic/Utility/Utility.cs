@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Formic.Utility
 {
-    public class Utility
+    public static class Utility
     {
         public static T Error<T>(string msg)
         {

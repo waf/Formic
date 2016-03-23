@@ -15,7 +15,6 @@ namespace Formic.Utility
             return entity.ClrType.GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
         }
 
-
         public static IQueryable<object> GetDbSetForType(DbContext db, IEntityType entity)
         {
             return (IQueryable<object>)db.GetType()

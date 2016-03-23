@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Formic.Utility
 {
-    public class Expressions
+    public static class Expressions
     {
         /// <summary>
         /// filter the provided queryable with the provided parameters.

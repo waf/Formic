@@ -22,7 +22,7 @@ namespace Formic.Utility
     {
         public static IHtmlContent EditorProperty(this IHtmlHelper helper, object record, IPropertyBase property)
         {
-            object propertyValue = property.GetGetter().GetClrValue(record);
+            object propertyValue = record == null ? null : property.GetGetter().GetClrValue(record);
             return helper.TextBox(property.Name, propertyValue);
         }
         public static IHtmlContent DisplayProperty(this IHtmlHelper helper, object record, INavigation property)
