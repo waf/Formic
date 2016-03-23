@@ -9,23 +9,16 @@ using System.Threading.Tasks;
 using Formic.Models;
 using Formic.Utility;
 using static Formic.Utility.Utility;
+using System.Reflection;
 
 namespace Formic.Controllers
 {
-    /*
-        / - list tables
-        /Blog - list records
-        /Blog/123 - view
-        /Blog/123/edit - edit
-
-    */
     [Route("")]
     public class HomeController : Controller
     {
-        DbContext db = new FormicdbContext();
+        readonly DbContext db = new FormicdbContext();
 
-        [HttpGet]
-        [Route("")]
+        [HttpGet("")]
         public IActionResult ListTables()
         {
             var tables = db.Model
@@ -36,11 +29,12 @@ namespace Formic.Controllers
             return View(tables);
         }
 
-        [HttpGet]
-        [Route("{table}/{id}/edit")]
+        [HttpGet("{table}/{id}/edit")]
         public IActionResult EditPage(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
+            if(entity == null) return HttpNotFound();
+
             var record = GetByPrimaryKey(entity, id);
 
             return record != null ?
@@ -48,34 +42,32 @@ namespace Formic.Controllers
                 new HttpNotFoundResult() as IActionResult;
         }
 
-        [HttpPost]
-        [Route("{table}/{id}/edit")]
+        [HttpPost("{table}/{id}/edit")]
+        [HttpPut("{table}/{id}/")]
         public IActionResult EditRecord(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
+            if(entity == null) return HttpNotFound();
+
             var record = GetByPrimaryKey(entity, id);
 
-            foreach (var prop in entity.GetProperties())
-            {
-                if(this.Request.Form.ContainsKey(prop.Name))
-                {
-                    var value = this.Request.Form[prop.Name].Single();
-                    var parsedValue = Convert(value, prop.ClrType);
-                    prop.GetSetter().SetClrValue(record, parsedValue);
-                }
-            }
+            //TODO: proper async
+            TryUpdateModelAsync(record, entity.ClrType, "").Wait();
+
             db.SaveChanges();
 
             return RedirectToAction("ListRecords");
         }
 
-        [HttpPost]
-        [HttpDelete]
-        [Route("{table}/{id}/delete")]
+        [HttpDelete("{table}/{id}/")]
+        [HttpPost("{table}/{id}/delete")]
         public IActionResult DeleteRecord(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
+            if(entity == null) return HttpNotFound();
 
+            // create a new entity object, set the primary key, and delete it.
+            // this is so we can issue just a DELETE, rather than a SELECT then DELETE.
             var t = Activator.CreateInstance(entity.ClrType);
             var pk = entity.FindPrimaryKey().Properties.First();
             pk.GetSetter().SetClrValue(t, Convert(id, pk.ClrType));
@@ -86,7 +78,34 @@ namespace Formic.Controllers
             return RedirectToAction("ListRecords");
         }
 
+        [HttpGet("{table}/create")]
+        public IActionResult CreatePage(string table, string id)
+        {
+            IEntityType entity = db.Model.FindEntityType(table);
+            if(entity == null) return HttpNotFound();
+            return View(CreateViewModelForEntity(entity));
+        }
 
+        [HttpPost("{table}/")]
+        [HttpPost("{table}/create")]
+        public IActionResult CreateRecord(string table)
+        {
+            IEntityType entity = db.Model.FindEntityType(table);
+            if(entity == null) return HttpNotFound();
+
+            var record = Activator.CreateInstance(entity.ClrType);
+            //TODO: proper async
+            // update model using modelbinder
+            TryUpdateModelAsync(record, entity.ClrType, "").Wait();
+            // empty out the pk, EF or the DB will generate a new one.
+            var pk = entity.FindPrimaryKey().Properties.First();
+            var emptyPk = pk.ClrType.GetTypeInfo().IsValueType ? Activator.CreateInstance(pk.ClrType) : null;
+            pk.GetSetter().SetClrValue(record, emptyPk);
+                
+            db.Add(record);
+            db.SaveChanges();
+            return RedirectToAction("ListRecords");
+        }
 
         private object GetByPrimaryKey(IEntityType entity, string id)
         {
@@ -105,11 +124,11 @@ namespace Formic.Controllers
             return Expressions.FilterByEntityParameters(results, entity, pkQuery).SingleOrDefault();
         }
 
-        [HttpGet]
-        [Route("{table}/")]
+        [HttpGet("{table}/")]
         public IActionResult ListRecords(string table)
         {
             IEntityType entity = db.Model.FindEntityType(table);
+            if(entity == null) return HttpNotFound();
             //MetadataProvider.GetMetadataForProperties(entity.ClrType);
             // TODO: cache reflection
             IQueryable<object> results = Reflection.GetDbSetForType(db, entity);
@@ -119,9 +138,7 @@ namespace Formic.Controllers
                 results = Expressions.FilterByEntityParameters(results, entity, Request.Query.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray()));
             }
 
-            //ExpressionMetadataProvider.FromStringExpression()
             //TODO: paging, async
-            var meta = MetadataProvider.GetMetadataForType(entity.ClrType);
             var model = CreateViewModelForEntity(entity, results.ToArray());
             return View(model);
         }
