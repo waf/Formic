@@ -20,10 +20,10 @@ namespace Formic.Utility
 {
     public static class ViewHelper
     {
-        public static IHtmlContent EditorProperty(this IHtmlHelper helper, object record, IPropertyBase property)
+        public static IHtmlContent EditorProperty(this IHtmlHelper helper, object record, IPropertyBase property, object htmlAttributes = null)
         {
             object propertyValue = record == null ? null : property.GetGetter().GetClrValue(record);
-            return helper.TextBox(property.Name, propertyValue);
+            return helper.TextBox(property.Name, propertyValue, htmlAttributes);
         }
         public static IHtmlContent DisplayProperty(this IHtmlHelper helper, object record, IPropertyBase property)
         {

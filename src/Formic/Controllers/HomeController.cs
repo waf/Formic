@@ -44,7 +44,6 @@ namespace Formic.Controllers
         }
 
         [HttpPost("{table}/{id}/edit")]
-        [HttpPut("{table}/{id}/")]
         public IActionResult EditRecord(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
@@ -60,7 +59,6 @@ namespace Formic.Controllers
             return RedirectToAction("ListRecords");
         }
 
-        [HttpDelete("{table}/{id}/")]
         [HttpPost("{table}/{id}/delete")]
         public IActionResult DeleteRecord(string table, string id)
         {
@@ -87,7 +85,6 @@ namespace Formic.Controllers
             return View(CreateViewModelForEntity(entity));
         }
 
-        [HttpPost("{table}/")]
         [HttpPost("{table}/create")]
         public IActionResult CreateRecord(string table)
         {
@@ -148,6 +145,7 @@ namespace Formic.Controllers
             var mvcMetadata = MetadataProvider.GetMetadataForProperties(type.ClrType);
             var efMetadata = type.GetPropertiesAndNavigations();
 
+            var primaryKeys = type.FindPrimaryKey().Properties;
             var metadata = mvcMetadata.Join(efMetadata,
                 mvc => mvc.PropertyName,
                 ef => ef.Name,
@@ -156,7 +154,8 @@ namespace Formic.Controllers
                 .Select(md => new PropertySchema
                 {
                     Description = md.mvc.GetDisplayName(),
-                    Property = md.ef
+                    Property = md.ef,
+                    IsPrimaryKey = primaryKeys.Contains(md.ef)
                 }).ToArray();
 
             return new RecordSet

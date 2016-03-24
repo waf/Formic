@@ -15,10 +15,18 @@
     <table>
     @foreach (var prop in Model.Properties)
     {
-        <tr>
-            <th>@prop.Description:</th>
-            <td>@Html.EditorProperty(entity, prop.Property)</td>
-        </tr>
+        if(prop.IsPrimaryKey)
+        {
+            // primary key shouldn't be edited
+            @Html.EditorProperty(entity, prop.Property, new { type = "hidden" })
+        }
+        else
+        {
+            <tr>
+                <th>@prop.Description:</th>
+                <td>@Html.EditorProperty(entity, prop.Property)</td>
+            </tr>
+        }
     }
         <tr>
             <td colspan="2">

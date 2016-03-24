@@ -7,7 +7,7 @@
 @using (Html.BeginForm())
 {
     <table>
-    @foreach (var prop in Model.Properties)
+    @foreach (var prop in Model.Properties.Where(p => !p.IsPrimaryKey))
     {
         <tr>
             <th>@prop.Description:</th>
