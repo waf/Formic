@@ -16,8 +16,8 @@
     @foreach (var prop in Model.Properties)
     {
         <tr>
-            <th>@prop.Name:</th>
-            <td>@Html.EditorProperty(entity, prop)</td>
+            <th>@prop.Description:</th>
+            <td>@Html.EditorProperty(entity, prop.Property)</td>
         </tr>
     }
         <tr>

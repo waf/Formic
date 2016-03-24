@@ -9,11 +9,7 @@
         <tr>
             @foreach(var property in Model.Properties)
             {
-                <th>@property.Name</th>
-            }
-            @foreach(var property in Model.NavigationProperties)
-            {
-                <th>@property.Name</th>
+                <th>@property.Description</th>
             }
         </tr>
     </thead>
@@ -23,11 +19,7 @@
             <tr>
             @foreach(var property in Model.Properties)
             {
-                <td>@Html.DisplayProperty(record, property)</td>
-            }
-            @foreach(var property in Model.NavigationProperties)
-            {
-                <td>@Html.DisplayProperty(record, property)</td>
+                <td>@Html.DisplayProperty(record, property.Property)</td>
             }
             </tr>
         }

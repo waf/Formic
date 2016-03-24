@@ -10,6 +10,7 @@ using Formic.Models;
 using Formic.Utility;
 using static Formic.Utility.Utility;
 using System.Reflection;
+using System.Diagnostics.Contracts;
 
 namespace Formic.Controllers
 {
@@ -129,7 +130,6 @@ namespace Formic.Controllers
         {
             IEntityType entity = db.Model.FindEntityType(table);
             if(entity == null) return HttpNotFound();
-            //MetadataProvider.GetMetadataForProperties(entity.ClrType);
             // TODO: cache reflection
             IQueryable<object> results = Reflection.GetDbSetForType(db, entity);
 
@@ -143,12 +143,25 @@ namespace Formic.Controllers
             return View(model);
         }
 
-        private RecordSet CreateViewModelForEntity(IEntityType type, params Object[] entities)
+        private RecordSet CreateViewModelForEntity(IEntityType type, params object[] entities)
         {
+            var mvcMetadata = MetadataProvider.GetMetadataForProperties(type.ClrType);
+            var efMetadata = type.GetPropertiesAndNavigations();
+
+            var metadata = mvcMetadata.Join(efMetadata,
+                mvc => mvc.PropertyName,
+                ef => ef.Name,
+                (mvc, ef) => new { mvc, ef })
+                .OrderBy(propertyMetadata => propertyMetadata.mvc.Order)
+                .Select(md => new PropertySchema
+                {
+                    Description = md.mvc.GetDisplayName(),
+                    Property = md.ef
+                }).ToArray();
+
             return new RecordSet
             {
-                Properties = type.GetProperties().ToArray(),
-                NavigationProperties = type.GetNavigations().ToArray(),
+                Properties = metadata,
                 Data = entities
             };
         }

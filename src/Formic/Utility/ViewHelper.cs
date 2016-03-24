@@ -25,6 +25,12 @@ namespace Formic.Utility
             object propertyValue = record == null ? null : property.GetGetter().GetClrValue(record);
             return helper.TextBox(property.Name, propertyValue);
         }
+        public static IHtmlContent DisplayProperty(this IHtmlHelper helper, object record, IPropertyBase property)
+        {
+            return (property is INavigation) ?
+                helper.DisplayProperty(record, property as INavigation) :
+                helper.DisplayProperty(record, property as IProperty);
+        }
         public static IHtmlContent DisplayProperty(this IHtmlHelper helper, object record, INavigation property)
         {
             var relation = property.IsCollection() ?

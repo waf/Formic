@@ -9,15 +9,13 @@ namespace Formic.Models
 {
     public class RecordSet
     {
-        public IProperty[] Properties { get; set; }
-        public INavigation[] NavigationProperties { get; set; }
+        public PropertySchema[] Properties { get; set; }
         public object[] Data { get; set; }
     }
 
-    public class RecordSetT<T>
+    public class PropertySchema
     {
-        public IProperty[] Properties { get; set; }
-        public INavigation[] NavigationProperties { get; set; }
-        public T[] Data { get; set; }
+        public string Description { get; set; }
+        public IPropertyBase Property { get; set; }
     }
 }
