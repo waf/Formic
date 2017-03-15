@@ -1,5 +1,5 @@
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Metadata;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Formic
 {
@@ -18,20 +18,20 @@ namespace Formic
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(100)
-                    .HasColumnType("varchar");
+                    .HasMaxLength(100);
+              //      .HasColumnType("varchar");
             });
 
             modelBuilder.Entity<Post>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
-                entity.Property(e => e.Content).HasColumnType("varchar");
+                entity.Property(e => e.Content);//.HasColumnType("varchar");
 
                 entity.Property(e => e.Title)
                     .IsRequired()
                     .HasMaxLength(100)
-                    .HasColumnType("varchar");
+                    ;//.HasColumnType("varchar");
 
                 entity.HasOne(d => d.Blog).WithMany(p => p.Post).HasForeignKey(d => d.BlogPK).OnDelete(DeleteBehavior.Restrict);
 
@@ -43,7 +43,7 @@ namespace Formic
                 entity.HasKey(a => a.Id);
                 entity.Property(a => a.Name)
                     .IsRequired()
-                    .HasColumnType("varchar")
+                    //.HasColumnType("varchar")
                     .HasMaxLength(100);
             });
 
@@ -54,11 +54,12 @@ namespace Formic
                 entity.Property(e => e.TagName)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnType("varchar");
+                    ;//.HasColumnType("varchar");
             });
 
             modelBuilder.Entity<PostTag>(entity =>
             {
+                entity.ToTable("PostTags");
                 entity.HasKey(t => new { t.PostId, t.TagId });
 
                 entity.HasOne(pt => pt.Post)

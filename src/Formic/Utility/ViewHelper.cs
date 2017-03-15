@@ -1,20 +1,16 @@
-﻿using Microsoft.AspNet.Mvc.ViewFeatures;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.AspNet.Html.Abstractions;
-using Microsoft.AspNet.Mvc.ViewFeatures.Internal;
-using Microsoft.AspNet.Mvc.Razor;
-using Microsoft.AspNet.Mvc.ViewEngines;
-using Microsoft.Data.Entity.Metadata;
-using Microsoft.Data.Entity.Metadata.Internal;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Data.Entity;
 using Formic.Controllers;
-using Microsoft.AspNet.Routing;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Html;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
 
 namespace Formic.Utility
 {
@@ -22,6 +18,36 @@ namespace Formic.Utility
     {
         public static IHtmlContent EditorProperty(this IHtmlHelper helper, object record, IPropertyBase property, object htmlAttributes = null)
         {
+            return (property is INavigation) ?
+                helper.EditorProperty(record, property as INavigation) :
+                helper.EditorProperty(record, property as IProperty);
+        }
+        public static IHtmlContent EditorProperty(this IHtmlHelper helper, object record, INavigation property, object htmlAttributes = null)
+        {
+            object propertyValue = record == null ? null : property.GetGetter().GetClrValue(record);
+
+            var lookupType = property.ForeignKey.PrincipalEntityType;
+            IQueryable<object> lookupData = Reflection.GetDbSetForType(HomeController.db, lookupType);
+
+            var primaryKeyGetter = EFUtils.GetPrimaryKeyProperty(lookupType).GetGetter();
+            var items = (from result in lookupData
+                         let value = primaryKeyGetter.GetClrValue(result).ToString()
+                         select new SelectListItem
+                         {
+                             Text = result.ToString(),
+                             Value = value,
+                             Selected = value.Equals(propertyValue)
+                         })
+                         .ToList();
+            return helper.DropDownList(property.ForeignKey.Properties.First().Name, items, "", htmlAttributes);
+        }
+        public static IHtmlContent EditorProperty(this IHtmlHelper helper, object record, IProperty property, object htmlAttributes = null)
+        {
+            if(property.GetContainingForeignKeys().Any())
+            {
+                // editing and creating this property should be handled by the INavigation entity property, rather than the raw key
+                return new StringHtmlContent(string.Empty);
+            }
             object propertyValue = record == null ? null : property.GetGetter().GetClrValue(record);
             return helper.TextBox(property.Name, propertyValue, htmlAttributes);
         }
@@ -50,7 +76,7 @@ namespace Formic.Utility
             var queryParameters = relation.ForeignEntityProperties
                 .Zip(relation.PrincipalProperties, (foreign, principal) => new { Parameter = foreign.Name, Value = principal.GetGetter().GetClrValue(record) })
                 .ToDictionary(kvp => kvp.Parameter, kvp => kvp.Value);
-            queryParameters["table"] = relation.ForeignEntityType;
+            queryParameters["table"] = relation.ForeignEntityType.Name;
 
             return helper.ActionLink("View", "ListRecords", "Home", queryParameters, null);
         }
