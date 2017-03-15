@@ -1,0 +1,12 @@
+﻿@using Formic.ViewComponents
+@model NavigationViewModel
+
+<div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">@Model.DbContextName</span>
+    <nav class="mdl-navigation">
+        @foreach(var table in Model.Tables)
+        {
+            <a class="mdl-navigation__link" href="/@table">@table</a>
+        }
+    </nav>
+</div>

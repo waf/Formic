@@ -1,10 +1,13 @@
 ﻿@model RecordSet
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Formic.Title"] = Model.EntityName;
 }
 
-<table>
+<table class="
+       center
+       mdl-data-table mdl-js-data-table
+       mdl-data-table--selectable mdl-shadow--2dp">
     <thead>
         <tr>
             @foreach(var property in Model.Properties)
@@ -25,3 +28,10 @@
         }
     </tbody>
 </table>
+
+<a href="@Model.EntityName/Create"
+   title="Create a new @Model.EntityName"
+   class="mdl-button mdl-js-button mdl-button--fab
+          mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp">
+  <i class="material-icons">add</i>
+</a>

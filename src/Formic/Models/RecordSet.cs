@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.Entity.Metadata;
-using Microsoft.Data.Entity.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +10,7 @@ namespace Formic.Models
     {
         public PropertySchema[] Properties { get; set; }
         public object[] Data { get; set; }
+        public string EntityName { get; set; }
     }
 
     public class PropertySchema

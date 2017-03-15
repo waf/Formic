@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Metadata;
-using Microsoft.Data.Entity.Metadata.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,43 +7,42 @@ using Formic.Utility;
 using static Formic.Utility.Utility;
 using System.Reflection;
 using System.Diagnostics.Contracts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Formic.Controllers
 {
     [Route("")]
     public class HomeController : Controller
     {
-        readonly DbContext db = new FormicdbContext();
+        public static readonly DbContext db = new FormicdbContext();
 
         [HttpGet("")]
-        public IActionResult ListTables()
+        public IActionResult Index()
         {
-            var tables = db.Model
-                .GetEntityTypes()
-                .Select(type => type.Name)
-                .ToList();
-
-            return View(tables);
+            return View();
         }
 
         [HttpGet("{table}/{id}/edit")]
         public IActionResult EditPage(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
-            if(entity == null) return HttpNotFound();
+            if (entity == null) return NotFound();
 
             var record = GetByPrimaryKey(entity, id);
 
             return record != null ?
                 View(CreateViewModelForEntity(entity, record)) :
-                new HttpNotFoundResult() as IActionResult;
+                NotFound() as IActionResult;
         }
 
         [HttpPost("{table}/{id}/edit")]
         public IActionResult EditRecord(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
-            if(entity == null) return HttpNotFound();
+            if(entity == null) return NotFound();
 
             var record = GetByPrimaryKey(entity, id);
 
@@ -63,7 +58,7 @@ namespace Formic.Controllers
         public IActionResult DeleteRecord(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
-            if(entity == null) return HttpNotFound();
+            if(entity == null) return NotFound();
 
             // create a new entity object, set the primary key, and delete it.
             // this is so we can issue just a DELETE, rather than a SELECT then DELETE.
@@ -81,7 +76,7 @@ namespace Formic.Controllers
         public IActionResult CreatePage(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
-            if(entity == null) return HttpNotFound();
+            if(entity == null) return NotFound();
             return View(CreateViewModelForEntity(entity));
         }
 
@@ -89,16 +84,17 @@ namespace Formic.Controllers
         public IActionResult CreateRecord(string table)
         {
             IEntityType entity = db.Model.FindEntityType(table);
-            if(entity == null) return HttpNotFound();
+            if(entity == null) return NotFound();
 
             var record = Activator.CreateInstance(entity.ClrType);
             //TODO: proper async
+
             // update model using modelbinder
             TryUpdateModelAsync(record, entity.ClrType, "").Wait();
             // empty out the pk, EF or the DB will generate a new one.
-            var pk = entity.FindPrimaryKey().Properties.First();
-            var emptyPk = pk.ClrType.GetTypeInfo().IsValueType ? Activator.CreateInstance(pk.ClrType) : null;
-            pk.GetSetter().SetClrValue(record, emptyPk);
+            //var pk = entity.FindPrimaryKey().Properties.First();
+            //var emptyPk = pk.ClrType.GetTypeInfo().IsValueType ? Activator.CreateInstance(pk.ClrType) : null;
+            //pk.GetSetter().SetClrValue(record, emptyPk);
                 
             db.Add(record);
             db.SaveChanges();
@@ -107,15 +103,14 @@ namespace Formic.Controllers
 
         private object GetByPrimaryKey(IEntityType entity, string id)
         {
-            var primaryKey = entity.FindPrimaryKey();
+            var primaryKey = EFUtils.GetPrimaryKeyProperty(entity);
             if (primaryKey == null)
             {
                 throw new Exception("Could not find primary key for " + entity.Name);
             }
-            // todo: composite support?
             var pkQuery = new Dictionary<string, string[]>
             {
-                {primaryKey.Properties.First().Name, new[] {id} }
+                {primaryKey.Name, new[] {id} }
             };
 
             IQueryable<object> results = Reflection.GetDbSetForType(db, entity);
@@ -126,7 +121,7 @@ namespace Formic.Controllers
         public IActionResult ListRecords(string table)
         {
             IEntityType entity = db.Model.FindEntityType(table);
-            if(entity == null) return HttpNotFound();
+            if(entity == null) return NotFound();
             // TODO: cache reflection
             IQueryable<object> results = Reflection.GetDbSetForType(db, entity);
 
@@ -160,6 +155,7 @@ namespace Formic.Controllers
 
             return new RecordSet
             {
+                EntityName = type.Name,
                 Properties = metadata,
                 Data = entities
             };
