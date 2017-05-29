@@ -83,15 +83,19 @@ namespace Formic.Utility
         public static IHtmlContent DisplayProperty(this IHtmlHelper helper, object record, IProperty property)
         {
             const string ViewPrefix = "DisplayTemplates/";
-
             object propertyValue = property.GetGetter().GetClrValue(record);
-            Func<string, IHtmlContent> Partial = str => helper.Partial(ViewPrefix + str, propertyValue);
+
+            IHtmlContent Partial(string partialFileName) =>
+                helper.Partial(ViewPrefix + partialFileName, propertyValue, new ViewDataDictionary(helper.ViewData)
+                {
+                    { "label", property.Name }
+                });
 
             // use user-specified template
-            var uiHint = property.DeclaringEntityType.ClrType
+            var attribute = property.DeclaringEntityType.ClrType
                 .GetProperty(property.Name)
-                .GetCustomAttribute(typeof(UIHintAttribute)) as UIHintAttribute;
-            if(uiHint != null)
+                .GetCustomAttribute(typeof(UIHintAttribute));
+            if (attribute is UIHintAttribute uiHint)
             {
                 return Partial(CreatePartialName(uiHint));
             }
@@ -114,7 +118,7 @@ namespace Formic.Utility
             return attr.UIHint;
         }
 
-        private static string CreatePartialName(IPropertyBase property)
+        private static string CreatePartialName(IProperty property)
         {
             return property.DeclaringEntityType.Name + "." + property.Name;
         }

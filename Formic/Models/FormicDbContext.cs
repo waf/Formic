@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Formic
 {
-    public partial class FormicdbContext : DbContext
+    public partial class FormicDbContext : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

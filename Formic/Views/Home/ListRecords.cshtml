@@ -1,0 +1,50 @@
+﻿@model RecordSet
+
+@{
+    ViewData["Formic.Title"] = Model.EntityName;
+}
+
+<table class="
+       center
+       mdl-data-table mdl-js-data-table
+        mdl-shadow--2dp">
+    <thead>
+        <tr>
+            @foreach(var property in Model.Properties)
+            {
+                <th>@property.Description</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var record in Model.Data)
+        {
+            <tr>
+                @{ 
+                    PropertySchema primaryKey = null;
+                }
+                @foreach(var property in Model.Properties)
+                {
+                    if(property.IsPrimaryKey)
+                    {
+                        primaryKey = property;
+                    }
+                    <td>@Html.DisplayProperty(record, property.Property)</td>
+                }
+                    <td>
+                        <a href="@Model.EntityName/@primaryKey.Property.GetGetter().GetClrValue(record)/Edit"
+                           title="Edit this @Model.EntityName">
+                            <i class="material-icons">edit</i>
+                        </a>
+                    </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Model.EntityName/Create"
+   title="Create a new @Model.EntityName"
+   class="mdl-button mdl-js-button mdl-button--fab
+          mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp">
+  <i class="material-icons">add</i>
+</a>

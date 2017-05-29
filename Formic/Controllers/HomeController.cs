@@ -17,7 +17,7 @@ namespace Formic.Controllers
     [Route("")]
     public class HomeController : Controller
     {
-        public static readonly DbContext db = new FormicdbContext();
+        public static readonly DbContext db = new FormicDbContext();
 
         [HttpGet("")]
         public IActionResult Index()
