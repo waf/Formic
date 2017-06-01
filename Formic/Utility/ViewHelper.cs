@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace Formic.Utility
 {
@@ -49,7 +50,8 @@ namespace Formic.Utility
                 return new StringHtmlContent(string.Empty);
             }
             object propertyValue = record == null ? null : property.GetGetter().GetClrValue(record);
-            return helper.TextBox(property.Name, propertyValue, htmlAttributes);
+            return LoadView(helper, "Edit", propertyValue, property) ??
+                helper.TextBox(property.Name, propertyValue);
         }
         public static IHtmlContent DisplayProperty(this IHtmlHelper helper, object record, IPropertyBase property)
         {
@@ -82,11 +84,16 @@ namespace Formic.Utility
         }
         public static IHtmlContent DisplayProperty(this IHtmlHelper helper, object record, IProperty property)
         {
-            const string ViewPrefix = "DisplayTemplates/";
             object propertyValue = property.GetGetter().GetClrValue(record);
 
+            return LoadView(helper, "Display", propertyValue, property) ??
+                new StringHtmlContent(propertyValue.ToString());
+        }
+
+        private static IHtmlContent LoadView(IHtmlHelper helper, string viewPrefix, object propertyValue, IProperty property)
+        {
             IHtmlContent Partial(string partialFileName) =>
-                helper.Partial(ViewPrefix + partialFileName, propertyValue, new ViewDataDictionary(helper.ViewData)
+                helper.Partial(Path.Combine(viewPrefix + "Templates", partialFileName), propertyValue, new ViewDataDictionary(helper.ViewData)
                 {
                     { "label", property.Name }
                 });
@@ -95,7 +102,7 @@ namespace Formic.Utility
             var attribute = property.DeclaringEntityType.ClrType
                 .GetProperty(property.Name)
                 .GetCustomAttribute(typeof(UIHintAttribute));
-            if (attribute is UIHintAttribute uiHint)
+            if (attribute is UIHintAttribute uiHint && uiHint.PresentationLayer.ToUpperInvariant() == viewPrefix.ToUpperInvariant())
             {
                 return Partial(CreatePartialName(uiHint));
             }
@@ -110,7 +117,7 @@ namespace Formic.Utility
             catch (InvalidOperationException) { }
 
             // fallback, just display the value as a string, with no template.
-            return new StringHtmlContent(propertyValue.ToString());
+            return null;
         }
 
         private static string CreatePartialName(UIHintAttribute attr)
