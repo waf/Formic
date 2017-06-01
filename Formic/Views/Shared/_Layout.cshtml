@@ -18,24 +18,15 @@
                 <span class="mdl-layout-title">@ViewData["Formic.Title"]</span>
                 <!-- Add spacer, to align navigation to the right -->
                 <div class="mdl-layout-spacer"></div>
-                <!-- Navigation -->
-                <!--
-                <nav class="mdl-navigation">
-                    <a class="mdl-navigation__link" href="">Link</a>
-                    <a class="mdl-navigation__link" href="">Link</a>
-                    <a class="mdl-navigation__link" href="">Link</a>
-                    <a class="mdl-navigation__link" href="">Link</a>
-                </nav>
-                -->
             </div>
         </header>
         <vc:Navigation></vc:Navigation>
         <main class="mdl-layout__content">
-            <div class="page-content">
+            <div class="page-content mdl-grid">
                 @RenderBody()
             </div>
         </main>
-        <vc:Debug></vc:Debug>
+        @*<vc:Debug></vc:Debug>*@
     </div>
     @RenderSection("scripts", required: false)
 </body>

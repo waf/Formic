@@ -4,22 +4,16 @@
     ViewData["Formic.Title"] = "Create a " + Model.EntityName;
 }
 
-@using (Html.BeginForm())
-{
-    <table>
-    @foreach (var prop in Model.Properties.Where(p => !p.IsPrimaryKey))
-    {
-        <tr>
-            <th>@prop.Description:</th>
-            <td>@Html.EditorProperty(null, prop.Property)</td>
-        </tr>
-    }
-        <tr>
-            <td colspan="2">
-                <input type="submit" value="Save" />
-            </td>
-        </tr>
-    </table>
+<div class="mdl-grid mdl-color--white mdl-shadow--2dp">
+    <form method="post" class="mdl-cell mdl-cell--12-col">
+        @foreach (var prop in Model.Properties.Where(p => !p.IsPrimaryKey))
+        {
+            @Html.EditorProperty(null, prop)
+        }
+        <div>
+            <input type="submit" value="Save" />
+        </div>
+    </form>
+</div>
 
-}
 

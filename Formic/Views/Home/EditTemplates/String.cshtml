@@ -1,9 +1,9 @@
 ﻿@model string
 
 @{ 
-    var inputName = (string)ViewBag.label;
+    var inputName = (string)ViewBag.FieldMetadata;
 }
 <div class="mdl-cell mdl-cell--12-col mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-    <input class="mdl-textfield__input" type="text" id="@inputName">
+    <input class="mdl-textfield__input" type="text" id="@inputName" name="@inputName" value="@Model">
     <label class="mdl-textfield__label" for="@inputName">@inputName</label>
 </div>

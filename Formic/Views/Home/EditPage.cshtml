@@ -5,27 +5,27 @@
     var entity = Model.Data.Single();
 }
 
-@using (Html.BeginForm("DeleteRecord","Home"))
-{
-    <input type="submit" value="Delete" />
-}
 
-@using (Html.BeginForm(FormMethod.Post, new { @class = "mdl-grid mdl-color--white mdl-shadow--2dp", style = "max-width:1080px" }))
-{
-    @foreach (var prop in Model.Properties)
-    {
-        if (prop.IsPrimaryKey)
+<div class="mdl-grid mdl-color--white mdl-shadow--2dp">
+    <div class="mdl-layout-spacer"></div>
+    <form asp-controller="Home" asp-action="DeleteRecord" class="mdl-cell mdl-cell--2-col" style="text-align:right">
+        <input type="submit" value="Delete" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" />
+    </form>
+    <form method="post" class="mdl-cell mdl-cell--12-col">
+        @foreach (var prop in Model.Properties)
         {
-            // primary key shouldn't be edited
-            @Html.EditorProperty(entity, prop.Property, new { type = "hidden" })
+            if (prop.IsPrimaryKey)
+            {
+                // primary key shouldn't be edited
+                @Html.EditorProperty(entity, prop, new { type = "hidden" })
+            }
+            else
+            {
+                @Html.EditorProperty(entity, prop)
+            }
         }
-        else
-        {
-            @Html.EditorProperty(entity, prop.Property)
-        }
-    }
-    <div>
-        <input type="submit" value="Save" />
-    </div>
-}
-
+        <div>
+            <input type="submit" value="Save" />
+        </div>
+    </form>
+</div>

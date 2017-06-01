@@ -29,7 +29,7 @@
                     {
                         primaryKey = property;
                     }
-                    <td>@Html.DisplayProperty(record, property.Property)</td>
+                    <td>@Html.DisplayProperty(record, property)</td>
                 }
                     <td>
                         <a href="@Model.EntityName/@primaryKey.Property.GetGetter().GetClrValue(record)/Edit"
