@@ -37,8 +37,8 @@ namespace Formic.Utility
                              Selected = value.Equals(propertyValue)
                          })
                          .ToList();
-            return helper.DropDownList(property.ForeignKey.Properties.First().Name, items, "", htmlAttributes);
-        }
+            return helper.DropDownList(property.ForeignKey.Properties.First().Name, items, "", new { @class = "mdc-select" });
+            }
 
         private static IHtmlContent EditorDataProperty(IHtmlHelper helper, object record, PropertySchema propertySchema, object htmlAttributes = null)
         {

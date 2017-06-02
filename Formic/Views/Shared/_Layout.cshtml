@@ -1,33 +1,36 @@
 ﻿<!DOCTYPE html>
-<html>
+<html class="mdc-typography">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>@ViewData["Formic.Title"] - Formic</title>
-    <link href="~/lib/material-design-lite/material.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/style/site.css">
-    <script src="~/lib/material-design-lite/material.min.js"></script>
+    <link href="~/node_modules/material-components-web/dist/material-components-web.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+    <link rel="stylesheet" href="~/style/bundle.css">
 </head>
-<body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
-    <!-- Always shows a header, even in smaller screens. -->
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
-        <header class="mdl-layout__header mdl-layout__header--scroll">
-            <div class="mdl-layout__header-row">
-                <!-- Title -->
-                <span class="mdl-layout-title">@ViewData["Formic.Title"]</span>
-                <!-- Add spacer, to align navigation to the right -->
-                <div class="mdl-layout-spacer"></div>
+<body>
+    <vc:Navigation></vc:Navigation>
+    <div class="demo-content">
+        <header class="mdc-toolbar mdc-elevation--z4">
+            <div class="mdc-toolbar__row">
+                <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+                    <span class="toolbar-back">
+                        <a onclick="history.back()"><i class="material-icons">&#xE5C4;</i></a>
+                    </span>
+                    <span class="mdc-toolbar__title catalog-title">@ViewData["Formic.Title"]</span>
+                </section>
             </div>
         </header>
-        <vc:Navigation></vc:Navigation>
-        <main class="mdl-layout__content">
-            <div class="page-content mdl-grid">
-                @RenderBody()
-            </div>
+
+        <main class="demo-main">
+            @RenderBody()
         </main>
-        @*<vc:Debug></vc:Debug>*@
     </div>
+
+    <script src="~/node_modules/material-components-web/dist/material-components-web.min.js"></script>
+    <script>window.mdc.autoInit();</script>
     @RenderSection("scripts", required: false)
+    @*<vc:Debug></vc:Debug>*@
 </body>
 </html>

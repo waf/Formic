@@ -1,12 +1,20 @@
 ﻿@using Formic.ViewComponents
 @model NavigationViewModel
 
-<div class="mdl-layout__drawer">
-    <span class="mdl-layout-title">@Model.DbContextName</span>
-    <nav class="mdl-navigation">
-        @foreach(var table in Model.Tables)
-        {
-            <a class="mdl-navigation__link" href="/@table">@table</a>
-        }
-    </nav>
-</div>
+<nav class="mdc-permanent-drawer">
+    <div class="mdc-permanent-drawer__toolbar-spacer" style="line-height:31px">
+        <span class="mdc-list-item__start-detail">&nbsp;{&nbsp;&nbsp;} </span>
+        @Model.DbContextName
+    </div>
+    <div class="mdc-list-group">
+        <nav class="mdc-list">
+            @foreach (var table in Model.Tables)
+            {
+                @* todo render selected table with mdc-permanent-drawer--selected css class *@
+                <a class="mdc-list-item" href="/@table">
+                    <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">view_list</i>@table
+                </a>
+            }
+        </nav>
+    </div>
+</nav>

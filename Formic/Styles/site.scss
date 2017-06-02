@@ -1,22 +1,75 @@
-﻿body {
-    height:100%;
-    width:100%;
+﻿:root {
+    --mdc-theme-primary: #0e4ead;
+    --mdc-theme-background: #f5f5f5;
+    --icon-color: rgba(0, 0, 0, 0.54);
+}
+html {
+    height: 100%;
 }
 
-.page-content {
-    padding:16px;
+body {
+    height: 100%;
+    width: 100%;
+    background-color: var(--mdc-theme-background);
+}
+/* Place drawer and content side by side. */
+body {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    min-height: 100%;
+    width: 100%;
 }
 
-.center {
-    margin-left:auto;
-    margin-right:auto;
+/* Stack toolbar and main on top of each other. */
+.demo-content {
+    display: inline-flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100%;
+    box-sizing: border-box;
 }
-.centered {
-    text-align:center;
+
+/* Place drawer above toolbar shadow. */
+.mdc-permanent-drawer {
+    z-index: 2;
+    background-color: #fff;
 }
-.mdl-button--fab {
+
+.mdc-card__primary {
+    background-color: white;
+}
+
+.mdc-button--accent.danger {
+    background-color: #ff4d4d;
+}
+
+.button-tray {
+    margin-top:24px;
+}
+
+.demo-main {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+a .material-icons {
+    color:var(--icon-color);
+}
+
+.toolbar-back a, .toolbar-back a:visited {
+    text-decoration: none;
+    padding-right: 24px;
+    color: #eeeeee;
+    cursor:pointer;
+}
+
+.fab-form {
     position:absolute;
-    bottom:32px;
-    right:32px;
+    bottom:20px;
+    right:20px;
 }
-

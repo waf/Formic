@@ -6,12 +6,11 @@
 }
 
 
-<div class="mdl-grid mdl-color--white mdl-shadow--2dp">
-    <div class="mdl-layout-spacer"></div>
-    <form asp-controller="Home" asp-action="DeleteRecord" class="mdl-cell mdl-cell--2-col" style="text-align:right">
-        <input type="submit" value="Delete" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" />
+<div class="mdc-card mdc-card__primary">
+    <form asp-controller="Home" asp-action="DeleteRecord" style="text-align:right">
+        <input type="submit" value="Delete" class="mdc-button mdc-button--raised mdc-button--accent danger" />
     </form>
-    <form method="post" class="mdl-cell mdl-cell--12-col">
+    <form method="post">
         @foreach (var prop in Model.Properties)
         {
             if (prop.IsPrimaryKey)
@@ -24,8 +23,8 @@
                 @Html.EditorProperty(entity, prop)
             }
         }
-        <div>
-            <input type="submit" value="Save" />
+        <div class="button-tray">
+            <input type="submit" value="Save" class="mdc-button mdc-button--raised mdc-button--primary" />
         </div>
     </form>
 </div>
