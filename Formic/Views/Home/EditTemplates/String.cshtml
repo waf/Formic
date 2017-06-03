@@ -4,8 +4,8 @@
     var inputName = (string)ViewBag.label;
     bool hasValue = !string.IsNullOrEmpty(Model);
 }
-<div class="form-element">
-    <div class="mdc-textfield @(hasValue ? "mdc-textfield--upgraded" : "")" data-mdc-auto-init="MDCTextfield">
+<div>
+    <div class="mdc-form-field mdc-textfield @(hasValue ? "mdc-textfield--upgraded" : "")" data-mdc-auto-init="MDCTextfield">
       <input type="text" id="@inputName" name="@inputName" value="@Model" class="mdc-textfield__input">
       <label class="mdc-textfield__label @(hasValue ? "mdc-textfield__label--float-above" : "")" for="@inputName">@inputName</label>
     </div>

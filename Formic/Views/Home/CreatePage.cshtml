@@ -4,14 +4,14 @@
     ViewData["Formic.Title"] = "Create a " + Model.EntityName;
 }
 
-<div class="mdl-grid mdl-color--white mdl-shadow--2dp">
-    <form method="post" class="mdl-cell mdl-cell--12-col">
+<div class="mdc-card mdc-card__primary edit-form">
+    <form method="post">
         @foreach (var prop in Model.Properties.Where(p => !p.IsPrimaryKey))
         {
             @Html.EditorProperty(null, prop)
         }
-        <div>
-            <input type="submit" value="Save" />
+        <div class="button-tray">
+            <input type="submit" value="Save" class="mdc-button mdc-button--raised mdc-button--primary" />
         </div>
     </form>
 </div>

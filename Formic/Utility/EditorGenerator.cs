@@ -19,12 +19,14 @@ namespace Formic.Utility
                 EditorDataProperty(helper, record, property);
         }
 
-        private static IHtmlContent EditorNavigationProperty(IHtmlHelper helper, object record, PropertySchema propertySchema, object htmlAttributes = null)
+        private static IHtmlContent EditorNavigationProperty(IHtmlHelper helper, object record, PropertySchema propertySchema)
         {
             INavigation property = propertySchema.Property as INavigation;
             object propertyValue = record == null ? null : property.GetGetter().GetClrValue(record);
 
-            var lookupType = property.ForeignKey.PrincipalEntityType;
+            var lookupType = property.IsDependentToPrincipal()
+                ? property.ForeignKey.PrincipalEntityType
+                : property.ForeignKey.DeclaringEntityType;
             IQueryable<object> lookupData = Reflection.GetDbSetForType(new FormicDbContext(), lookupType);
 
             var primaryKeyGetter = EFUtils.GetPrimaryKeyProperty(lookupType).GetGetter();
@@ -37,10 +39,12 @@ namespace Formic.Utility
                              Selected = value.Equals(propertyValue)
                          })
                          .ToList();
-            return helper.DropDownList(property.ForeignKey.Properties.First().Name, items, "", new { @class = "mdc-select" });
-            }
 
-        private static IHtmlContent EditorDataProperty(IHtmlHelper helper, object record, PropertySchema propertySchema, object htmlAttributes = null)
+            return GeneratorUtils.LoadView(helper, "Edit", items, propertySchema) ??
+                GeneratorUtils.LoadView(helper, "EditTemplates/Navigation", items, propertySchema.Description);
+        }
+
+        private static IHtmlContent EditorDataProperty(IHtmlHelper helper, object record, PropertySchema propertySchema)
         {
             IProperty property = propertySchema.Property as IProperty;
             if(property.GetContainingForeignKeys().Any())
@@ -49,7 +53,13 @@ namespace Formic.Utility
                 return new StringHtmlContent(string.Empty);
             }
             object propertyValue = record == null ? null : property.GetGetter().GetClrValue(record);
-            return GeneratorUtils.LoadView(helper, "Edit", propertyValue, property) ??
+
+            if(property.IsPrimaryKey())
+            {
+                // primary key shouldn't be edited
+                return helper.Hidden(property.Name, propertyValue);
+            }
+            return GeneratorUtils.LoadView(helper, "Edit", propertyValue, propertySchema) ??
                 helper.TextBox(property.Name, propertyValue);
         }
     }

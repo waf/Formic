@@ -3,6 +3,7 @@
     --mdc-theme-background: #f5f5f5;
     --icon-color: rgba(0, 0, 0, 0.54);
 }
+
 html {
     height: 100%;
 }
@@ -42,12 +43,18 @@ body {
     background-color: white;
 }
 
-.mdc-button--accent.danger {
-    background-color: #ff4d4d;
+.edit-form {
+    flex-grow: 0.6;
+}
+.delete-button {
+    color: #ff4d4d;
+    cursor: pointer;
+    background: none;
+    border: 0;
 }
 
 .button-tray {
-    margin-top:24px;
+    margin-top: 24px;
 }
 
 .demo-main {
@@ -58,18 +65,42 @@ body {
 }
 
 a .material-icons {
-    color:var(--icon-color);
+    color: var(--icon-color);
 }
 
-.toolbar-back a, .toolbar-back a:visited {
+.toolbar-back .material-icons {
     text-decoration: none;
     padding-right: 24px;
     color: #eeeeee;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .fab-form {
-    position:absolute;
-    bottom:20px;
-    right:20px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+/* override pink background button color */
+.mdc-button.mdc-button--accent:before {
+    background-color: rgba(0,0,0,.06);
+}
+
+/* for some reason there's a 4px padding difference between labels and text fields which misaligns things */
+.mdc-textfield__input {
+    padding-left:4px;
+}
+
+/* hack to support floating text labels on dropdowns, which is unsupported on the
+    current version of mdc. We give the dropdowns a text field class and override it */
+.select-form-field.mdc-textfield--upgraded:after {
+    content:none !important;
+}
+.select-form-field select {
+    min-width:200px;
+    padding:4px;
+}
+
+select:focus + label {
+    color: var(--mdc-theme-primary);
 }

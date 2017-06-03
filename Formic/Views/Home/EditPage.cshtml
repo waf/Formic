@@ -6,22 +6,16 @@
 }
 
 
-<div class="mdc-card mdc-card__primary">
+<div class="mdc-card mdc-card__primary edit-form">
     <form asp-controller="Home" asp-action="DeleteRecord" style="text-align:right">
-        <input type="submit" value="Delete" class="mdc-button mdc-button--raised mdc-button--accent danger" />
+        <button class="mdc-icon material-icons delete-button" title="Delete this @Model.EntityName">
+            delete
+        </button>
     </form>
     <form method="post">
         @foreach (var prop in Model.Properties)
         {
-            if (prop.IsPrimaryKey)
-            {
-                // primary key shouldn't be edited
-                @Html.EditorProperty(entity, prop, new { type = "hidden" })
-            }
-            else
-            {
-                @Html.EditorProperty(entity, prop)
-            }
+            @Html.EditorProperty(entity, prop)
         }
         <div class="button-tray">
             <input type="submit" value="Save" class="mdc-button mdc-button--raised mdc-button--primary" />

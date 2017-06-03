@@ -17,16 +17,21 @@ namespace Formic.Utility
 {
     public class GeneratorUtils
     {
-        public static IHtmlContent LoadView(IHtmlHelper helper, string viewPrefix, object propertyValue, IPropertyBase property)
+        public static IHtmlContent LoadView(IHtmlHelper helper, string viewName, object propertyValue, string propertyName)
         {
+            return helper.Partial(viewName, propertyValue, new ViewDataDictionary(helper.ViewData)
+            {
+                { "label", propertyName }
+            });
+        }
+        public static IHtmlContent LoadView(IHtmlHelper helper, string viewPrefix, object propertyValue, PropertySchema propertySchema)
+        {
+            var property = propertySchema.Property;
             IHtmlContent Partial(string partialFileName) =>
-                helper.Partial(Path.Combine(viewPrefix + "Templates", partialFileName), propertyValue, new ViewDataDictionary(helper.ViewData)
-                {
-                    { "label", property.Name }
-                });
+                LoadView(helper, Path.Combine(viewPrefix + "Templates", partialFileName), propertyValue, propertySchema.Description); 
 
             // use user-specified template
-            var attribute = property.DeclaringEntityType.ClrType
+            var attribute = property.DeclaringType.ClrType
                 .GetProperty(property.Name)
                 .GetCustomAttribute(typeof(UIHintAttribute));
             if (attribute is UIHintAttribute uiHint && uiHint.PresentationLayer.ToUpperInvariant() == viewPrefix.ToUpperInvariant())

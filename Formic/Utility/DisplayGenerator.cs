@@ -51,7 +51,7 @@ namespace Formic.Utility
             IProperty property = propertySchema.Property as IProperty;
             object propertyValue = property.GetGetter().GetClrValue(record);
 
-            return GeneratorUtils.LoadView(helper, "Display", propertyValue, property) ??
+            return GeneratorUtils.LoadView(helper, "Display", propertyValue, propertySchema) ??
                 new StringHtmlContent(propertyValue.ToString());
         }
     }
