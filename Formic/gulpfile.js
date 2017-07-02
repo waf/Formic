@@ -10,8 +10,17 @@ var cleanCSS = require('gulp-clean-css');
 var sourcemaps = require('gulp-sourcemaps');
 var npmFiles = require('gulp-npm-files');
 var concatCSS = require('gulp-concat-css');
+var watch = require('gulp-watch');
+
+gulp.task("watch", function () {
+    return watch("Styles/**/*.scss", { ignoreInitial: false }, buildSass);
+});
 
 gulp.task("sass", function () {
+    return buildSass();
+});
+
+function buildSass() {
     return gulp.src('Styles/*.scss')
         .pipe(sourcemaps.init())
         .pipe(sass())
@@ -19,7 +28,8 @@ gulp.task("sass", function () {
         .pipe(cleanCSS())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('wwwroot/style'));
-});
+}
+
 gulp.task('npm-dependencies', function () {
     gulp.src(npmFiles(), { base: './' }).pipe(gulp.dest('./wwwroot'));
 });

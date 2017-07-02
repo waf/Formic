@@ -1,35 +1,23 @@
 ﻿<!DOCTYPE html>
-<html class="mdc-typography">
+<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>@ViewData["Formic.Title"] - Formic</title>
-    <link href="~/node_modules/material-components-web/dist/material-components-web.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
-    <link rel="stylesheet" href="~/style/bundle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
+    <link rel="stylesheet" href="~/style/bundle.css" />
 </head>
-<body>
+<body id="with-drawer">
+    <header>
+        <a href="#with-drawer" class="mobile-menu-control menu-open"><i class="fa fa-bars" aria-label="Navigation"></i></a>
+        <h1 class="title">@ViewData["Formic.Title"]</h1>
+    </header>
     <vc:Navigation></vc:Navigation>
-    <div class="demo-content">
-        <header class="mdc-toolbar mdc-elevation--z4">
-            <div class="mdc-toolbar__row">
-                <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
-                    <span class="toolbar-back">
-                        <a onclick="history.back()"><i class="material-icons">&#xE5C4;</i></a>
-                    </span>
-                    <span class="mdc-toolbar__title catalog-title">@ViewData["Formic.Title"]</span>
-                </section>
-            </div>
-        </header>
+    <main>
+        @RenderBody()
+    </main>
 
-        <main class="demo-main">
-            @RenderBody()
-        </main>
-    </div>
-
-    <script src="~/node_modules/material-components-web/dist/material-components-web.min.js"></script>
-    <script>window.mdc.autoInit();</script>
     @RenderSection("scripts", required: false)
     @*<vc:Debug></vc:Debug>*@
 </body>

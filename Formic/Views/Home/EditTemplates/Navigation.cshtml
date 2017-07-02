@@ -4,17 +4,15 @@
     var inputName = (string)ViewBag.label;
 }
 
-<div>
 
-    <div class="select-form-field mdc-form-field mdc-textfield mdc-textfield--upgraded">
-        <select name="@inputName" id="@inputName" class="mdc-select">
-            @foreach (var item in Model)
-            {
-                <option value="@item.Value"
-                        @(item.Selected ? "selected='selected'" : "")
-                        @(item.Disabled ? "disabled='disabled'" : "")>@item.Text</option>
-            }
-        </select>
-        <label for="@inputName" class="mdc-textfield__label mdc-textfield__label--float-above">@inputName</label>
-    </div>
-</div>
+<label for="@inputName">@inputName:</label>
+<select name="@inputName" id="@inputName">
+    @foreach (var item in Model)
+    {
+        <option value="@item.Value"
+                @(item.Selected ? "selected='selected'" : "" )
+                @(item.Disabled ? "disabled='disabled'" : "" )>
+            @item.Text
+        </option>
+    }
+</select>

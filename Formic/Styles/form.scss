@@ -1,0 +1,49 @@
+﻿
+.form-fields {
+    background-color:#fff;
+    padding:10px;
+}
+
+.form-fields input,
+.form-fields select,
+.form-fields textarea {
+    display: block;
+    padding: 4px;
+    margin-bottom:10px;
+}
+.form-fields label {
+    display: block;
+    font-size: 0.9em;
+    display: inline-block;
+}
+
+.flat-button {
+    border: none;
+    color: #fff;
+    padding: 8px 20px;
+    text-transform: uppercase;
+    width:100px;
+    box-shadow: 0 0 2px rgba(0,0,0,.12), 0 2px 2px rgba(0,0,0,.2);
+    transition: opacity 200ms linear;
+    cursor:pointer;
+}
+
+.flat-button:hover {
+    opacity: .9;
+}
+.flat-button:active {
+    opacity: 1;
+}
+
+.button-tray {
+    margin-bottom:10px;
+}
+
+.flat-button.add,
+.flat-button.save {
+    background-color: #2196F3;
+}
+.flat-button.delete {
+    background-color: #f55a4e;
+    float:right;
+}

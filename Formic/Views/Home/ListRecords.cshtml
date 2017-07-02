@@ -4,7 +4,16 @@
     ViewData["Formic.Title"] = Model.EntityName;
 }
 
-<table class="mdl-data-table">
+<form class="button-tray">
+    <button formaction="@Model.EntityName/Create"
+            title="Create a new @Model.EntityName"
+            class="flat-button add"
+            aria-label="Add">
+            add
+    </button>
+</form>
+
+<table>
     <thead>
         <tr>
             @foreach (var property in Model.Properties)
@@ -32,7 +41,7 @@
                 <td>
                     <a href="@Model.EntityName/@primaryKey.Property.GetGetter().GetClrValue(record)/Edit"
                        title="Edit this @Model.EntityName"
-                       class="mdc-button mdc-button--accent">
+                       class="edit">
                         Edit
                     </a>
                 </td>
@@ -40,13 +49,3 @@
                     }
     </tbody>
 </table>
-
-<form class="fab-form">
-    <button formaction="@Model.EntityName/Create"
-            title="Create a new @Model.EntityName"
-            class="mdc-fab material-icons" aria-label="Add">
-        <span class="mdc-fab__icon">
-            add
-        </span>
-    </button>
-</form>

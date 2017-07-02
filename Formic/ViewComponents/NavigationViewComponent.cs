@@ -18,12 +18,12 @@ namespace Formic.ViewComponents
 
         public Task<IViewComponentResult> InvokeAsync()
         {
-            string dbName = dbContext.GetType().Name;
             string[] tables = dbContext.Model
                 .GetEntityTypes()
                 .Select(type => type.Name)
                 .ToArray();
-            var viewModel = new NavigationViewModel(dbName, tables);
+            string selectedTable = this.ViewContext.ModelState["table"]?.RawValue as string;
+            var viewModel = new NavigationViewModel(tables, selectedTable);
             return ViewResult(viewModel);
         }
 
@@ -33,12 +33,12 @@ namespace Formic.ViewComponents
 
     public class NavigationViewModel
     {
-        public NavigationViewModel(string dbContextName, string[] tables)
+        public NavigationViewModel(string[] tables, string selectedTable)
         {
-            DbContextName = dbContextName;
+            SelectedTable = selectedTable;
             Tables = tables;
         }
-        public string DbContextName { get; }
+        public string SelectedTable { get; }
         public string[] Tables { get; }
     }
 }

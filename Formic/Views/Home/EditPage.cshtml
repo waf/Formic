@@ -5,20 +5,17 @@
     var entity = Model.Data.Single();
 }
 
-
-<div class="mdc-card mdc-card__primary edit-form">
-    <form asp-controller="Home" asp-action="DeleteRecord" style="text-align:right">
-        <button class="mdc-icon material-icons delete-button" title="Delete this @Model.EntityName">
-            delete
-        </button>
-    </form>
-    <form method="post">
-        @foreach (var prop in Model.Properties)
-        {
+<form method="post">
+    <div class="button-tray">
+        <button type="submit" class="flat-button save">save</button>
+        <button type="submit" asp-controller="Home" asp-action="DeleteRecord" class="flat-button delete">delete</button>
+    </div>
+    <div class="form-fields">
+    @foreach (var prop in Model.Properties)
+    {
+        <div class="form-group">
             @Html.EditorProperty(entity, prop)
-        }
-        <div class="button-tray">
-            <input type="submit" value="Save" class="mdc-button mdc-button--raised mdc-button--primary" />
         </div>
-    </form>
-</div>
+    }
+    </div>
+</form>

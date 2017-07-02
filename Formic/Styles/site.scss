@@ -1,106 +1,46 @@
-﻿:root {
-    --mdc-theme-primary: #0e4ead;
-    --mdc-theme-background: #f5f5f5;
-    --icon-color: rgba(0, 0, 0, 0.54);
-}
+﻿@import "_vars";
 
+html, body {
+    height:100%;
+    margin:0;
+    padding:0;
+    background-color:#f5f5f5;
+}
 html {
-    height: 100%;
+    font-family: 'Roboto', sans-serif;
 }
 
 body {
-    height: 100%;
     width: 100%;
-    background-color: var(--mdc-theme-background);
-}
-/* Place drawer and content side by side. */
-body {
     display: flex;
-    flex-direction: row;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    min-height: 100%;
-    width: 100%;
+    flex-flow: row wrap;
+}
+header {
+    order: 1;
+    flex: 1 100%;
+}
+.drawer {
+    order: 2;
+    padding-top:20px;
+}
+main {
+    order: 3;
+    flex-grow:1;
+    height:100%;
+    padding:8px 20px;
+    width:0;
+    overflow:auto;
 }
 
-/* Stack toolbar and main on top of each other. */
-.demo-content {
-    display: inline-flex;
-    flex-direction: column;
-    flex-grow: 1;
-    height: 100%;
-    box-sizing: border-box;
+header {
+    height:80px;
+    display:block;
+    width:100%;
+    border-bottom:1px solid #ddd;
+    background-color:#fff;
 }
-
-/* Place drawer above toolbar shadow. */
-.mdc-permanent-drawer {
-    z-index: 2;
-    background-color: #fff;
-}
-
-.mdc-card__primary {
-    background-color: white;
-}
-
-.edit-form {
-    flex-grow: 0.6;
-}
-.delete-button {
-    color: #ff4d4d;
-    cursor: pointer;
-    background: none;
-    border: 0;
-}
-
-.button-tray {
-    margin-top: 24px;
-}
-
-.demo-main {
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-a .material-icons {
-    color: var(--icon-color);
-}
-
-.toolbar-back .material-icons {
-    text-decoration: none;
-    padding-right: 24px;
-    color: #eeeeee;
-    cursor: pointer;
-}
-
-.fab-form {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-}
-
-/* override pink background button color */
-.mdc-button.mdc-button--accent:before {
-    background-color: rgba(0,0,0,.06);
-}
-
-/* for some reason there's a 4px padding difference between labels and text fields which misaligns things */
-.mdc-textfield__input {
-    padding-left:4px;
-}
-
-/* hack to support floating text labels on dropdowns, which is unsupported on the
-    current version of mdc. We give the dropdowns a text field class and override it */
-.select-form-field.mdc-textfield--upgraded:after {
-    content:none !important;
-}
-.select-form-field select {
-    min-width:200px;
-    padding:4px;
-}
-
-select:focus + label {
-    color: var(--mdc-theme-primary);
+header h1 {
+    text-align:center;
+    line-height:80px;
+    margin:0;
 }

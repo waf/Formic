@@ -1,0 +1,98 @@
+﻿@import "_vars";
+
+$left-padding: 24px;
+
+.drawer {
+    width: $drawer-width;
+    transition: width 200ms ease-out;
+    height: 100%;
+}
+
+.drawer h2 {
+    text-transform: uppercase;
+    font-size: 12px;
+    line-height: 16px;
+    margin: 0 0 12px 0;
+    color: #9e9e9e;
+    font-weight: normal;
+    padding-left: $left-padding;
+}
+
+.table-list a {
+    display: block;
+    color: #616161;
+    text-decoration: none;
+    padding: 10px 0 10px $left-padding;
+    transition: background-color 200ms linear, color 200ms linear;
+}
+
+.table-list a:hover {
+    background-color: #f2f2f2;
+    color: #222;
+}
+
+.table-list a.active {
+    background-color: #eeeeee;
+    color:#000;
+}
+
+.table-name {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.mobile-menu-control {
+    display: none;
+    position: absolute;
+    top: 0;
+    color:inherit;
+    text-decoration:none;
+    padding:10px;
+}
+
+.mobile-menu-control.menu-open {
+    left: 0;
+}
+
+.mobile-menu-control.menu-close {
+    right: 0;
+}
+
+
+@media only screen and (max-width : 500px) {
+
+    .drawer {
+        width: 0;
+        overflow: hidden;
+        box-shadow: 0 0 10px #666;
+        background-color: #fff;
+        position: absolute;
+        top: 0;
+    }
+
+    .table-list a:hover {
+        background-color: #fcfcfc;
+    }
+
+    .mobile-menu-control.menu-close {
+        display: none;
+    }
+
+    .mobile-menu-control.menu-open {
+        display: inline-block;
+    }
+
+    #with-drawer:target {
+        .drawer {
+            width: $drawer-width;
+        }
+
+        .menu-close {
+            display: inline-block;
+        }
+
+        .menu-open {
+            display: none;
+        }
+    }
+}

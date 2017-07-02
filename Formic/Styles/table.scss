@@ -1,0 +1,22 @@
+﻿@import "_vars";
+
+table {
+    background-color: #fff;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.04);
+    width:100%;
+    border-collapse: collapse;
+    overflow:scroll;
+}
+
+tbody tr:nth-last-of-type(even) {
+    background-color:#fcfcfc;
+}
+tbody tr:hover {
+    background-color:#fafafa;
+    transition:background-color 200ms linear;
+}
+
+th, td {
+    text-align:left;
+    padding:4px;
+}
