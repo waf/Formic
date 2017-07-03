@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Formic.Controllers
 {
@@ -48,6 +49,10 @@ namespace Formic.Controllers
 
             //TODO: proper async
             TryUpdateModelAsync(record, entity.ClrType, "").Wait();
+            if(!ModelState.IsValid)
+            {
+                return View("EditPage", CreateViewModelForEntity(entity, record));
+            }
 
             db.SaveChanges();
 
@@ -91,11 +96,15 @@ namespace Formic.Controllers
 
             // update model using modelbinder
             TryUpdateModelAsync(record, entity.ClrType, "").Wait();
+            if(!ModelState.IsValid)
+            {
+                return View("CreatePage", CreateViewModelForEntity(entity, record));
+            }
             // empty out the pk, EF or the DB will generate a new one.
             //var pk = entity.FindPrimaryKey().Properties.First();
             //var emptyPk = pk.ClrType.GetTypeInfo().IsValueType ? Activator.CreateInstance(pk.ClrType) : null;
             //pk.GetSetter().SetClrValue(record, emptyPk);
-                
+
             db.Add(record);
             db.SaveChanges();
             return RedirectToAction("ListRecords");

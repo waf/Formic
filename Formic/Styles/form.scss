@@ -47,3 +47,21 @@
     background-color: #f55a4e;
     float:right;
 }
+
+.validation-summary-errors {
+    ul {
+        padding: 0;
+    }
+    li {
+        color: #ff0000;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+
+        &::before {
+            content: "\f06a";
+            font-family: FontAwesome;
+            padding-right: 5px;
+        }
+    }
+}

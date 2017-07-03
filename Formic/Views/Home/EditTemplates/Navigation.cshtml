@@ -1,17 +1,18 @@
 ﻿@model IList<SelectListItem>
 
 @{ 
-    var inputName = (string)ViewBag.label;
+    var label = (string)ViewBag.label;
+    var name = (string)ViewBag.name;
 }
 
 
-<label for="@inputName">@inputName:</label>
-<select name="@inputName" id="@inputName">
+<label for="@name">@label:</label>
+<select name="@name" id="@name">
     @foreach (var item in Model)
     {
         <option value="@item.Value"
-                @(item.Selected ? "selected='selected'" : "" )
-                @(item.Disabled ? "disabled='disabled'" : "" )>
+                selected="@(item.Selected ? "selected" : "" )"
+                disabled="@(item.Disabled ? "disabled" : "" )">
             @item.Text
         </option>
     }

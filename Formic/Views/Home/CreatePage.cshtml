@@ -8,6 +8,7 @@
     <div class="button-tray">
         <input type="submit" value="save" class="flat-button save" />
     </div>
+    <div asp-validation-summary="All"></div>
     <div class="form-fields">
         @foreach (var prop in Model.Properties.Where(p => !p.IsPrimaryKey))
         {

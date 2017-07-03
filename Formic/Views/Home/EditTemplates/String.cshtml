@@ -1,8 +1,8 @@
 ﻿@model string
 
 @{
-    var inputName = (string)ViewBag.label;
-    bool hasValue = !string.IsNullOrEmpty(Model);
+    var label = (string)ViewBag.label;
+    var name = (string)ViewBag.name;
 }
-<label @(hasValue ? "mdc-textfield__label--float-above" : "")" for="@inputName">@inputName:</label>
-<input type="text" id="@inputName" name="@inputName" value="@Model">
+<label for="@name">@label:</label>
+<input type="text" id="@name" name="@name" value="@Model">

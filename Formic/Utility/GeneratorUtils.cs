@@ -17,18 +17,19 @@ namespace Formic.Utility
 {
     public class GeneratorUtils
     {
-        public static IHtmlContent LoadView(IHtmlHelper helper, string viewName, object propertyValue, string propertyName)
+        public static IHtmlContent LoadView(IHtmlHelper helper, string viewName, object propertyValue, string propertyLabel, string propertyName)
         {
             return helper.Partial(viewName, propertyValue, new ViewDataDictionary(helper.ViewData)
             {
-                { "label", propertyName }
+                { "label", propertyLabel },
+                { "name", propertyName },
             });
         }
         public static IHtmlContent LoadView(IHtmlHelper helper, string viewPrefix, object propertyValue, PropertySchema propertySchema)
         {
             var property = propertySchema.Property;
             IHtmlContent Partial(string partialFileName) =>
-                LoadView(helper, Path.Combine(viewPrefix + "Templates", partialFileName), propertyValue, propertySchema.Description); 
+                LoadView(helper, Path.Combine(viewPrefix + "Templates", partialFileName), propertyValue, propertySchema.Description, propertySchema.Property.Name); 
 
             // use user-specified template
             var attribute = property.DeclaringType.ClrType

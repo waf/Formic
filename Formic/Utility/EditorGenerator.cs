@@ -41,7 +41,7 @@ namespace Formic.Utility
                          .ToList();
 
             return GeneratorUtils.LoadView(helper, "Edit", items, propertySchema) ??
-                GeneratorUtils.LoadView(helper, "EditTemplates/Navigation", items, propertySchema.Description);
+                GeneratorUtils.LoadView(helper, "EditTemplates/Navigation", items, propertySchema.Description, propertySchema.Property.Name);
         }
 
         private static IHtmlContent EditorDataProperty(IHtmlHelper helper, object record, PropertySchema propertySchema)
