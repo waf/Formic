@@ -48,6 +48,9 @@
     float:right;
 }
 
+.validation-summary-valid {
+    display:none;
+}
 .validation-summary-errors {
     ul {
         padding: 0;
