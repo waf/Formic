@@ -1,10 +1,10 @@
 ﻿@import "_vars";
 
 $left-padding: 24px;
+$drawer-width: 200px;
 
 .drawer {
-    width: $drawer-width;
-    transition: width 200ms ease-out;
+    width: 200px;
     height: 100%;
 }
 
@@ -62,12 +62,12 @@ $left-padding: 24px;
 @media only screen and (max-width : 500px) {
 
     .drawer {
-        width: 0;
-        overflow: hidden;
-        box-shadow: 0 0 10px #666;
         background-color: #fff;
         position: absolute;
         top: 0;
+        transform: translateX(-100%);
+        transition: transform 200ms linear;
+        will-change: transform;
     }
 
     .table-list a:hover {
@@ -84,7 +84,8 @@ $left-padding: 24px;
 
     #with-drawer:target {
         .drawer {
-            width: $drawer-width;
+            transform: none;
+            box-shadow: 0 0 10px #666;
         }
 
         .menu-close {
