@@ -27,12 +27,12 @@ namespace Formic.Controllers
         }
 
         [HttpGet("{table}/{id}/edit")]
-        public IActionResult EditPage(string table, string id)
+        public async Task<IActionResult> EditPage(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
             if (entity == null) return NotFound();
 
-            var record = GetByPrimaryKey(entity, id);
+            var record = await GetByPrimaryKey(entity, id);
 
             return record != null ?
                 View(CreateViewModelForEntity(entity, record)) :
@@ -40,27 +40,26 @@ namespace Formic.Controllers
         }
 
         [HttpPost("{table}/{id}/edit")]
-        public IActionResult EditRecord(string table, string id)
+        public async Task<IActionResult> EditRecord(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
             if(entity == null) return NotFound();
 
-            var record = GetByPrimaryKey(entity, id);
+            var record = await GetByPrimaryKey(entity, id);
 
-            //TODO: proper async
-            TryUpdateModelAsync(record, entity.ClrType, "").Wait();
+            await TryUpdateModelAsync(record, entity.ClrType, "");
             if(!ModelState.IsValid)
             {
                 return View("EditPage", CreateViewModelForEntity(entity, record));
             }
 
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return RedirectToAction("ListRecords");
         }
 
         [HttpPost("{table}/{id}/delete")]
-        public IActionResult DeleteRecord(string table, string id)
+        public async Task<IActionResult> DeleteRecord(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
             if(entity == null) return NotFound();
@@ -72,7 +71,7 @@ namespace Formic.Controllers
             pk.GetSetter().SetClrValue(t, Convert(id, pk.ClrType));
             db.Attach(t);
             db.Remove(t);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return RedirectToAction("ListRecords");
         }
@@ -86,16 +85,15 @@ namespace Formic.Controllers
         }
 
         [HttpPost("{table}/create")]
-        public IActionResult CreateRecord(string table)
+        public async Task<IActionResult> CreateRecord(string table)
         {
             IEntityType entity = db.Model.FindEntityType(table);
             if(entity == null) return NotFound();
 
             var record = Activator.CreateInstance(entity.ClrType);
-            //TODO: proper async
 
             // update model using modelbinder
-            TryUpdateModelAsync(record, entity.ClrType, "").Wait();
+            await TryUpdateModelAsync(record, entity.ClrType, "");
             if(!ModelState.IsValid)
             {
                 return View("CreatePage", CreateViewModelForEntity(entity, record));
@@ -106,11 +104,11 @@ namespace Formic.Controllers
             //pk.GetSetter().SetClrValue(record, emptyPk);
 
             db.Add(record);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             return RedirectToAction("ListRecords");
         }
 
-        private object GetByPrimaryKey(IEntityType entity, string id)
+        private Task<object> GetByPrimaryKey(IEntityType entity, string id)
         {
             var primaryKey = EFUtils.GetPrimaryKeyProperty(entity);
             if (primaryKey == null)
@@ -123,24 +121,28 @@ namespace Formic.Controllers
             };
 
             IQueryable<object> results = Reflection.GetDbSetForType(db, entity);
-            return Expressions.FilterByEntityParameters(results, entity, pkQuery).SingleOrDefault();
+            return Expressions
+                .FilterByEntityParameters(results, entity, pkQuery)
+                .SingleOrDefaultAsync();
         }
 
         [HttpGet("{table}/")]
-        public IActionResult ListRecords(string table)
+        public async Task<IActionResult> ListRecords(string table)
         {
             IEntityType entity = db.Model.FindEntityType(table);
             if(entity == null) return NotFound();
             // TODO: cache reflection
-            IQueryable<object> results = Reflection.GetDbSetForType(db, entity);
+            IQueryable<object> query = Reflection.GetDbSetForType(db, entity);
 
             if (Request.Query.Any())
             {
-                results = Expressions.FilterByEntityParameters(results, entity, Request.Query.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray()));
+                var queryParams = Request.Query.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray());
+                query = Expressions.FilterByEntityParameters(query, entity, queryParams);
             }
 
-            //TODO: paging, async
-            var model = CreateViewModelForEntity(entity, results.ToArray());
+            //TODO: paging
+            var results = await query.ToArrayAsync();
+            var model = CreateViewModelForEntity(entity, results);
             return View(model);
         }
 
@@ -150,10 +152,11 @@ namespace Formic.Controllers
             var efMetadata = type.GetPropertiesAndNavigations();
 
             var primaryKeys = type.FindPrimaryKey().Properties;
-            var metadata = mvcMetadata.Join(efMetadata,
-                mvc => mvc.PropertyName,
-                ef => ef.Name,
-                (mvc, ef) => new { mvc, ef })
+            var metadata = mvcMetadata
+                .Join(efMetadata,
+                      mvc => mvc.PropertyName,
+                      ef => ef.Name,
+                      (mvc, ef) => new { mvc, ef })
                 .OrderBy(propertyMetadata => propertyMetadata.mvc.Order)
                 .Select(md => new PropertySchema
                 {
