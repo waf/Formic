@@ -8,7 +8,9 @@
 <form method="post">
     <div class="button-tray">
         <button type="submit" class="flat-button save">save</button>
-        <button type="submit" asp-controller="Home" asp-action="DeleteRecord" class="flat-button delete">delete</button>
+        <button type="submit"  class="flat-button delete"
+                asp-controller="Home" asp-action="DeleteRecord"
+                asp-route-table="@Model.EntityName">delete</button>
     </div>
     <div asp-validation-summary="All"></div>
     <div class="form-fields">

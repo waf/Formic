@@ -5,15 +5,5 @@
     var name = (string)ViewBag.name;
 }
 
-
 <label for="@name">@label:</label>
-<select name="@name" id="@name">
-    @foreach (var item in Model)
-    {
-        <option value="@item.Value"
-                selected="@(item.Selected ? "selected" : "" )"
-                disabled="@(item.Disabled ? "disabled" : "" )">
-            @item.Text
-        </option>
-    }
-</select>
+@Html.DropDownList(name, Model)

@@ -55,10 +55,10 @@ namespace Formic.Controllers
 
             await db.SaveChangesAsync();
 
-            return RedirectToAction("ListRecords");
+            return RedirectToAction(nameof(ListRecords), new { table });
         }
 
-        [HttpPost("{table}/{id}/delete")]
+        [HttpPost("delete")]
         public async Task<IActionResult> DeleteRecord(string table, string id)
         {
             IEntityType entity = db.Model.FindEntityType(table);
@@ -67,13 +67,13 @@ namespace Formic.Controllers
             // create a new entity object, set the primary key, and delete it.
             // this is so we can issue just a DELETE, rather than a SELECT then DELETE.
             var t = Activator.CreateInstance(entity.ClrType);
-            var pk = entity.FindPrimaryKey().Properties.First();
-            pk.GetSetter().SetClrValue(t, Convert(id, pk.ClrType));
+            var pk = entity.FindPrimaryKey().Properties[0];
+            pk.AsProperty().Setter.SetClrValue(t, Convert(id, pk.ClrType));
             db.Attach(t);
             db.Remove(t);
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync().ConfigureAwait(false);
 
-            return RedirectToAction("ListRecords");
+            return RedirectToAction(nameof(ListRecords), new { table });
         }
 
         [HttpGet("{table}/create")]
@@ -105,7 +105,7 @@ namespace Formic.Controllers
 
             db.Add(record);
             await db.SaveChangesAsync();
-            return RedirectToAction("ListRecords");
+            return RedirectToAction(nameof(ListRecords), new { table });
         }
 
         private Task<object> GetByPrimaryKey(IEntityType entity, string id)
